@@ -11,7 +11,7 @@ class Topic(models.Model):
 
 class INode(models.Model):
     name = models.CharField(max_length=255)
-    parent = models.ForeignKey('Folder', on_delete=models.CASCADE)
+    parent = models.ForeignKey('Folder', on_delete=models.CASCADE, default=1)
     topics = models.ManyToManyField(Topic, blank=True)
 
     class Meta:
