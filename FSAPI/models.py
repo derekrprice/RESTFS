@@ -8,10 +8,14 @@ class Topic(models.Model):
     class Meta:
         db_table = 'Topics'
 
+    def __str__(self):
+        return "%s: %s" % (self.name, self.description)
+
 
 class INode(models.Model):
     name = models.CharField(max_length=255)
-    parent = models.ForeignKey('Folder', on_delete=models.CASCADE, default=1)
+    parent = models.ForeignKey('Folder', on_delete=models.CASCADE, default=1, related_name='%(class)s_set',
+                               blank=True, null=True)
     topics = models.ManyToManyField(Topic, blank=True)
 
     class Meta:

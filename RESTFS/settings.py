@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'FSAPI.apps.FsapiConfig',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
