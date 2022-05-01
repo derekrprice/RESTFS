@@ -4,21 +4,21 @@ from FSAPI.models import Document, Folder, Topic
 class FolderViewTestCase(TestCase):
     def setUp(self):
         root_topic = Topic.objects.create(name='Root', description="The root folder.  You can't fool me, sonny!  It's turtles all the way down.")
-        spekit_love = Topic.objects.create(name='SpekitLove!', description='These customers love Spekit!')
+        speki_love = Topic.objects.create(name='SpekiLove!', description='These customers love Spekit!')
         Folder.objects.create(name='/').topics.add(root_topic)
         Folder.objects.create(name='/Customer Feedback')
         Document.objects.create(
             name='/Customer Feedback/Alison',
             content='This is so great!  Show me more!',
-        ).topics.add(spekit_love)
+        ).topics.add(speki_love)
         Document.objects.create(
             name='/Customer Feedback/Derek',
             content='Spekit seems like a great company!  I love the product!',
-        ).topics.add(spekit_love)
+        ).topics.add(speki_love)
         Document.objects.create(
             name='/Customer Feedback/Wyatt',
             content='Wow!  This makes my job so easy!',
-        ).topics.add(spekit_love)
+        ).topics.add(speki_love)
         Document.objects.create(
             name='/Customer Feedback/Negative Nancy',
             content='Meh.',
@@ -27,13 +27,13 @@ class FolderViewTestCase(TestCase):
         Document.objects.create(
             name='/Marketing/Derek',
             content="This guy does great work!  We can't live without him.",
-        ).topics.add(spekit_love)
+        ).topics.add(speki_love)
         Folder.objects.create(name='/Marketing/Print')
         Folder.objects.create(name='/Marketing/Web')
         Document.objects.create(
             name='/Marketing/Web/Headline',
             content="Cut sales training and ramp time in half",
-        ).topics.add(spekit_love)
+        ).topics.add(speki_love)
 
     def test_list_root_folder(self):
         """Can list the content of the root folder."""
@@ -77,7 +77,7 @@ class FolderViewTestCase(TestCase):
     def test_filter_folder_docs_by_topic(self):
         """Can filter documents by topic."""
         c = Client()
-        response = c.get('/folders/Customer Feedback/?topics=SpekitLove!')
+        response = c.get('/folders/Customer Feedback/?topics=SpekiLove!')
         self.assertEquals(response.status_code, 200)
 
         content = response.json()

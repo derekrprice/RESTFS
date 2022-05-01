@@ -28,6 +28,6 @@ too many API calls.
 |                 | DELETE | Delete Folder or Document.  Deletes recursively when deleting a a folder. |
 |                 |        |                                                                           |
 | /topics/        | GET    | Lists all topics.                                                         |
+|                 | POST   | Creates a new topic.                                                      |
 |                 |        |                                                                           |
-| /topics/{name}  | PUT    | Creates or replaces a topic.                                              |
-|                 | DELETE | Deletes a topic, only if there are no iNodes with it attached,            |
+| /topics/{name}  | DELETE | Deletes a topic, only if there are no iNodes with it attached.            |

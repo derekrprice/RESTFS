@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from FSAPI.models import Topic
+from FSAPI.models import INode, Topic
 
 
 class TopicView(APIView):
@@ -12,8 +12,11 @@ class TopicView(APIView):
     """
     @csrf_exempt
     def delete(self, request, pk):
-        deleted = Topic.objects.filter(pk=pk).delete()
+        inodes = INode.objects.filter(topics__pk=pk).all()
+        if (inodes):
+            return Response(status=status.HTTP_403_FORBIDDEN)
 
+        deleted = Topic.objects.filter(pk=pk).delete()
         if deleted[0] == 0:
             return Response(status=status.HTTP_404_NOT_FOUND)
 

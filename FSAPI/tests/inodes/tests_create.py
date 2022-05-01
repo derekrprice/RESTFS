@@ -4,13 +4,13 @@ from FSAPI.models import Document, Folder, Topic
 class FolderViewTestCase(TestCase):
     def setUp(self):
         root_topic = Topic.objects.create(name='Root', description="The root folder.  You can't fool me, sonny!  It's turtles all the way down.")
-        spekit_love = Topic.objects.create(name='SpekitLove!', description='These customers love Spekit!')
+        speki_love = Topic.objects.create(name='SpekiLove!', description='These customers love Spekit!')
         Folder.objects.create(name='/').topics.add(root_topic)
         Folder.objects.create(name='/Marketing')
         Document.objects.create(
             name='/Marketing/Derek',
             content="This guy does great work!  We can't live without him.",
-        ).topics.add(spekit_love)
+        ).topics.add(speki_love)
 
     def test_create_folder(self):
         """Can create a folder."""
@@ -48,7 +48,7 @@ class FolderViewTestCase(TestCase):
         """Can create a document."""
         c = Client()
         response = c.put("/folders/Marketing/Headline/", {
-            "topics": ["SpekitLove!"],
+            "topics": ["SpekiLove!"],
             "content": "Cut sales training and ramp time in half!"
         }, content_type='application/json')
         self.assertEquals(response.status_code, 200)
@@ -58,18 +58,18 @@ class FolderViewTestCase(TestCase):
         self.assertEquals(content['documents'], [{
             'name': '/Marketing/Derek',
             "content": "This guy does great work!  We can't live without him.",
-            "topics": ["SpekitLove!"],
+            "topics": ["SpekiLove!"],
         }, {
             'name': '/Marketing/Headline',
             "content": "Cut sales training and ramp time in half!",
-            "topics": ["SpekitLove!"],
+            "topics": ["SpekiLove!"],
         }])
 
     def test_create_document_wont_overwrite_folder(self):
         """Documents won't overwrite existing folders."""
         c = Client()
         response = c.put("/folders/Marketing/", {
-            "topics": ["SpekitLove!"],
+            "topics": ["SpekiLove!"],
             "content": "We can't get enough of this guy!"
         }, content_type='application/json')
         self.assertEquals(response.status_code, 409)
@@ -78,7 +78,7 @@ class FolderViewTestCase(TestCase):
         """Can update a document."""
         c = Client()
         response = c.put("/folders/Marketing/Derek/", {
-            "topics": ["SpekitLove!"],
+            "topics": ["SpekiLove!"],
             "content": "We can't get enough of this guy!"
         }, content_type='application/json')
         self.assertEquals(response.status_code, 200)
@@ -88,5 +88,5 @@ class FolderViewTestCase(TestCase):
         self.assertEquals(content['documents'], [{
             'name': '/Marketing/Derek',
             "content": "We can't get enough of this guy!",
-            "topics": ["SpekitLove!"],
+            "topics": ["SpekiLove!"],
         }])
