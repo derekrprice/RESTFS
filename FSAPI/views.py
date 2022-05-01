@@ -109,8 +109,10 @@ class FolderView(APIView):
 
 class TopicListView(APIView):
     """
-        GET Returns a list of all the Topics, with an optional fuzzy `contains=` filter
+        GET returns a list of all the Topics, with an optional fuzzy `contains=` filter
         that is matched against either name or description.
+
+        POST creates a new topic.
     """
     @csrf_exempt
     def get(self, request):
@@ -125,21 +127,34 @@ class TopicListView(APIView):
         }
         return Response(data)
 
+    @csrf_exempt
+    def post(self, request):
+        serializer = TopicSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response({"status": "error", "data": serializer.errors}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+
+        try:
+            existing = Topic.objects.get(name=serializer.validated_data['name'])
+        except Topic.DoesNotExist:
+            existing = None
+
+        if existing:
+            # No dup names.
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        serializer.save()
+        return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
+
 
 class TopicView(APIView):
     """
         PUT replaces a Topic.
     """
     @csrf_exempt
-    def put(self, request, pk):
-        try:
-            existing = Topic.objects.get(pk=pk)
-        except Topic.DoesNotExist:
-            existing = None
+    def delete(self, request, pk):
+        deleted = Topic.objects.filter(pk=pk).delete()
 
-        serializer = TopicSerializer(existing, request.data)
-        if (serializer.is_valid()):
-            serializer.save()
-            return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
-        else:
-            return Response({"status": "error", "data": serializer.errors}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+        if deleted[0] == 0:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        return Response({"deleted": deleted}, status=status.HTTP_200_OK)

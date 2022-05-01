@@ -1,11 +1,10 @@
 from django.test import Client, TestCase
 from FSAPI.models import Document, Folder, Topic
 
-# Create your tests here.
 class FolderViewTestCase(TestCase):
     def setUp(self):
-        root_topic = Topic.objects.create(name='Root', description='These customers love Spekit!')
-        spekit_love = Topic.objects.create(name='SpekitLove!', description="The root folder.  You can't fool me, sonny!  It's turtles all the way down.")
+        root_topic = Topic.objects.create(name='Root', description="The root folder.  You can't fool me, sonny!  It's turtles all the way down.")
+        spekit_love = Topic.objects.create(name='SpekitLove!', description='These customers love Spekit!')
         Folder.objects.create(name='/').topics.add(root_topic)
         Folder.objects.create(name='/Customer Feedback')
         Document.objects.create(
