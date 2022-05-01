@@ -11,49 +11,42 @@ from .models import Document, Folder
 
 import os.path
 
+
 class FolderView(APIView):
 
-    @csrf_exempt
     def get(self, request, path=''):
-
         try:
             folder = Folder.objects.get(name='/%s' % path)
         except Folder.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        parent = os.path.dirname('/%s' % path)
+        parent_name = os.path.dirname('/%s' % path)
+        topics = request.query_params['topics'].split(',') if 'topics' in request.query_params else None
+        escaped_path = '' if len(path) == 0 else '/' + ''.join('\\u%04x' % ord(c) for c in path)
 
-        try:
-            if len(path) == 0:
-                escaped_path = ''
-            else:
-                escaped_path = '/' + ''.join('\\u%04x' % ord(c) for c in path)
-            subfolders = Folder.objects.filter(name__regex=r'^%s/[^/]+$' % escaped_path).all()
-            documents = Document.objects.filter(name__regex=r'^%s/[^/]+$' % escaped_path).all()
-        except Folder.DoesNotExist:
-            subfolders = []
+        subfolders_query = Folder.objects.filter(name__regex=r'^%s/[^/]+$' % escaped_path)
+        subfolders = subfolders_query.filter(topics__name__in=topics).all() if topics else subfolders_query.all()
+
+        documents_query = Document.objects.filter(name__regex=r'^%s/[^/]+$' % escaped_path)
+        documents = documents_query.filter(topics__name__in=topics).all() if topics else documents_query.all()
 
         data = {
             "name": folder.name,
             "topics": [topic.name for topic in folder.topics.all()],
-            "up": request.build_absolute_uri('/folders' + parent),
+            "up": request.build_absolute_uri('/folders' + parent_name),
             "subfolders": [request.build_absolute_uri('/folders' + subfolder.name) for subfolder in subfolders],
             "documents": [DocumentSerializer(document).data for document in documents],
         }
         return Response(data)
 
     def put(self, request, path=''):
-
         # Parent folder must exist.
         try:
             Folder.objects.get(name=os.path.dirname('/%s' % path))
         except Folder.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        try:
-            existing = Folder.objects.get(name='/%s' % path)
-        except Folder.DoesNotExist:
-            existing = None
+        existing = Folder.objects.get(name='/%s' % path)
 
         if existing and 'content' in request.data:
             return Response({"status": "error", "data": {"content":["Target is a folder."]}}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
