@@ -1,5 +1,7 @@
 from django.urls import path
-from .views import FolderView, TopicListView, TopicView
+from .views.folder import FolderView
+from .views.topic import TopicView
+from .views.topiclist import TopicListView
 
 urlpatterns = [
     path('folders/', FolderView.as_view()),
