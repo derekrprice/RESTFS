@@ -21,3 +21,12 @@ class FolderSerializer(serializers.ModelSerializer):
         model = Folder
         fields = ('name', 'topics')
         lookup_field = 'name'
+
+
+class TopicSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(max_length=15)
+    description = serializers.CharField(max_length=255)
+
+    class Meta:
+        model = Topic
+        fields = ('id', 'name', 'description')
