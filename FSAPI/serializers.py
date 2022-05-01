@@ -1,32 +1,23 @@
 from rest_framework import serializers
-from .models import Document, Folder
+from .models import Document, Folder, Topic
 
 
 class DocumentSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=255)
-    topics = serializers.StringRelatedField(many=True, read_only=True)
+    topics = serializers.SlugRelatedField(many=True, slug_field='name', queryset=Topic.objects.all())
     content = serializers.CharField(max_length=4096)
 
     class Meta:
         model = Document
-        fields = ('__all__',)
-
-
-class FolderIdSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Folder
-        fields = ('id',)
+        fields = ('name', 'topics', 'content')
+        lookup_field = 'name'
 
 
 class FolderSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=255)
-    topics = serializers.StringRelatedField(many=True, read_only=True)
-    document = DocumentSerializer(many=True)
-    folder = FolderIdSerializer(many=True)
+    topics = serializers.SlugRelatedField(many=True, slug_field='name', queryset=Topic.objects.all())
 
     class Meta:
         model = Folder
-        fields = ('id', 'name', 'topics', 'document', 'folder')
-
-    # def to_representation(self, instance):
+        fields = ('name', 'topics')
+        lookup_field = 'name'
