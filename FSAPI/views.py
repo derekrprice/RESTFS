@@ -32,7 +32,7 @@ class FolderView(APIView):
         except Folder.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        parent_name = os.path.dirname('/%s' % path)
+        parent_name = self.__get_parent_path(path)
         topics = request.query_params['topics'].split(',') if 'topics' in request.query_params else None
         escaped_path = '' if len(path) == 0 else '/' + ''.join('\\u%04x' % ord(c) for c in path)
 
@@ -45,7 +45,7 @@ class FolderView(APIView):
             "name": folder.name,
             "topics": [topic.name for topic in folder.topics.all()],
             "up": request.build_absolute_uri('/folders' + parent_name),
-            "folders": [request.build_absolute_uri('/folders' + subfolder.name) for subfolder in subfolders],
+            "folders": [request.build_absolute_uri('/folders' + subfolder.name + '/') for subfolder in subfolders],
             "documents": [DocumentSerializer(document).data for document in documents],
             "query": request.query_params if request.query_params else {},
         }
@@ -68,7 +68,7 @@ class FolderView(APIView):
         except INode.DoesNotExist:
             existing = None
 
-        if 'content' in request.data and isinstance(existing, Folder):
+        if existing and 'content' in request.data and isinstance(existing, Folder):
             return Response({"status": "error", "data": {"content":["Target is a folder."]}}, status=status.HTTP_409_CONFLICT)
 
         data = {**request.data, "name": '/%s' % path}
@@ -98,6 +98,13 @@ class FolderView(APIView):
         deleted = Document.objects.filter(name__regex=r'^%s(/|$)' % escaped_path).delete()
         deleted += Folder.objects.filter(name__regex=r'^%s(/|$)' % escaped_path).delete()
         return Response({"deleted": deleted}, status=status.HTTP_200_OK)
+
+    def __get_parent_path(self, path):
+        """There is some ugly special casing required to compose Django's trailing slash URLs."""
+        parent_name = os.path.dirname('/%s' % path)
+        if len(parent_name) > 1:
+            parent_name += '/'
+        return parent_name
 
 
 class TopicListView(APIView):

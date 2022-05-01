@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import dj_database_url
-import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,9 +19,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-m4@wp8k-dmsuegw$x_an4o_s_*4oyr8hyg7&m0&njrl5$0)vf7'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -129,13 +125,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_TRUSTED_ORIGINS=['https://restfs.herokuapp.com']
 
-# Configure Django App for Heroku.
-django_heroku.settings(locals())
-
 DATABASES = {'default': dj_database_url.config(default='postgres://user:pass@localhost/dbname')}
 
 try:
-    from .local_settings import *
+    from .local import *
 except ImportError:
     pass
 
