@@ -38,6 +38,13 @@ class FolderViewTestCase(TestCase):
         filtered_data = {key: content['data'][1][key] for key in ["name", "description"]}
         self.assertEquals(filtered_data, {"name": "Meh.", "description": "Really?  Can you believe these people?"})
 
+    def test_cant_create_duplicate_topic(self):
+        """Can create a topic."""
+        c = Client()
+        response = c.post("/topics/", {"name": "Meh.", "description": "Really?  Can you believe these people?"})
+        response = c.post("/topics/", {"name": "Meh.", "description": "Really?  Can you believe these people?"})
+        self.assertEquals(response.status_code, 403)
+
     def test_delete_topic(self):
         """Can delete a topic."""
         c = Client()
