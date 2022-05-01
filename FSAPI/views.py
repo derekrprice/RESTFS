@@ -1,3 +1,5 @@
+import re
+
 from django.shortcuts import render
 
 # Create your views here.
@@ -7,7 +9,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import DocumentSerializer, FolderSerializer, TopicSerializer
-from .models import Document, Folder, Topic
+from .models import INode, Document, Folder, Topic
 
 import os.path
 
@@ -34,11 +36,10 @@ class FolderView(APIView):
         topics = request.query_params['topics'].split(',') if 'topics' in request.query_params else None
         escaped_path = '' if len(path) == 0 else '/' + ''.join('\\u%04x' % ord(c) for c in path)
 
-        subfolders_query = Folder.objects.filter(name__regex=r'^%s/[^/]+$' % escaped_path)
-        subfolders = subfolders_query.filter(topics__name__in=topics).all() if topics else subfolders_query.all()
-
-        documents_query = Document.objects.filter(name__regex=r'^%s/[^/]+$' % escaped_path)
-        documents = documents_query.filter(topics__name__in=topics).all() if topics else documents_query.all()
+        inode_query = INode.objects.filter(name__regex=r'^%s/[^/]+$' % escaped_path)
+        inodes = inode_query.filter(topics__name__in=topics).all() if topics else inode_query.all()
+        subfolders = filter(lambda inode: isinstance(inode, Folder), inodes)
+        documents = filter(lambda inode: isinstance(inode, Document), inodes)
 
         data = {
             "name": folder.name,
@@ -52,6 +53,10 @@ class FolderView(APIView):
 
     @csrf_exempt
     def put(self, request, path=''):
+        # Reject empty path segments.
+        if re.search('//', path):
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
         # Parent folder must exist.
         try:
             Folder.objects.get(name=os.path.dirname('/%s' % path))
@@ -59,11 +64,11 @@ class FolderView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         try:
-            existing = Folder.objects.get(name='/%s' % path)
-        except Folder.DoesNotExist:
+            existing = INode.objects.get(name='/%s' % path)
+        except INode.DoesNotExist:
             existing = None
 
-        if existing and 'content' in request.data:
+        if 'content' in request.data and isinstance(existing, Folder):
             return Response({"status": "error", "data": {"content":["Target is a folder."]}}, status=status.HTTP_409_CONFLICT)
 
         data = {**request.data, "name": '/%s' % path}
@@ -80,12 +85,19 @@ class FolderView(APIView):
 
     @csrf_exempt
     def delete(self, request, path=''):
+        # Primary resource must exist.
+        try:
+            INode.objects.get(name='/%s' % path)
+        except INode.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
         if path in ['', '/']:
             return Response(status=status.HTTP_403_FORBIDDEN)
 
         escaped_path = '/' + ''.join('\\u%04x' % ord(c) for c in path)
-        deleted = Folder.objects.filter(name__regex=r'^%s(/|$)' % escaped_path).delete()
-        return Response({"count": deleted}, status=status.HTTP_200_OK)
+        deleted = Document.objects.filter(name__regex=r'^%s(/|$)' % escaped_path).delete()
+        deleted += Folder.objects.filter(name__regex=r'^%s(/|$)' % escaped_path).delete()
+        return Response({"deleted": deleted}, status=status.HTTP_200_OK)
 
 
 class TopicListView(APIView):

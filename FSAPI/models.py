@@ -1,4 +1,5 @@
 from django.db import models
+from polymorphic.models import PolymorphicModel
 
 
 class Topic(models.Model):
@@ -12,11 +13,13 @@ class Topic(models.Model):
         return "%s: %s" % (self.name, self.description)
 
 
-class INode(models.Model):
+class INode(PolymorphicModel):
     name = models.CharField(max_length=4096, unique=True)
     topics = models.ManyToManyField(Topic, blank=True)
+    non_polymorphic = models.Manager()
 
     class Meta:
+        base_manager_name = 'non_polymorphic'
         db_table = 'INodes'
         indexes = [models.Index(fields=['name'])]
         ordering = ['name']
