@@ -1,7 +1,6 @@
 from django.shortcuts import render
 
 # Create your views here.
-from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -13,8 +12,15 @@ import os.path
 
 
 class FolderView(APIView):
+    """
+        GET Returns a list of all the Folders and Documents contained within a Folder with an optional `topics=` filter
+            which filters topics by name.
 
+        PUT manages Folders and Documents.
+    """
+    @csrf_exempt
     def get(self, request, path=''):
+
         try:
             folder = Folder.objects.get(name='/%s' % path)
         except Folder.DoesNotExist:
@@ -34,11 +40,12 @@ class FolderView(APIView):
             "name": folder.name,
             "topics": [topic.name for topic in folder.topics.all()],
             "up": request.build_absolute_uri('/folders' + parent_name),
-            "subfolders": [request.build_absolute_uri('/folders' + subfolder.name) for subfolder in subfolders],
+            "folders": [request.build_absolute_uri('/folders' + subfolder.name) for subfolder in subfolders],
             "documents": [DocumentSerializer(document).data for document in documents],
         }
         return Response(data)
 
+    @csrf_exempt
     def put(self, request, path=''):
         # Parent folder must exist.
         try:

@@ -21,10 +21,13 @@ too many API calls.
 ### API
 
 | Path            | Method | Description                                                               |
-| --------------- |--------|---------------------------------------------------------------------------|
-| /folders/{path} | GET    | Get information on Folder or Document                                     |
+|-----------------|--------|---------------------------------------------------------------------------|
+|                 |        |                                                                           |
+| /folders/{path} | GET    | Get information about a Folder or Document                                |
 |                 | PUT    | Create or replace Folder or Document                                      |
  |                 | DELETE | Delete Folder or Document.  Deletes recursively when deleting a a folder. |
 |                 |        |                                                                           |
-
-
+| /topics/        | GET    | Lists all topics.                                                         |
+ |                 |        |                                                                           |
+| /topics/{name}  | PUT    | Creates or replaces a topic.                                              |
+ |                 | DELETE | Deletes a topic, only if there are no iNodes with it attached,            |
