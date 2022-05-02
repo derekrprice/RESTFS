@@ -1,6 +1,15 @@
 # RESTFS
 
-View the [Demo](https://restfs.herokuapp.com/) on Heroku
+View the demo on Heroku:
+* [Folders Root](https://restfs.herokuapp.com/folders/)
+* [Topics Root](https://restfs.herokuapp.com/topics/)
+
+Folders are accessible by PATH name.  I didn't document it extensively, but I
+think the links included in the API output make it fairly intuitive to navigate.
+
+Some of the API endpoints aren't directly accessible, so you might find the
+[Postman](https://www.postman.com/) [collection](doc/RESTFS.postman_collection.json)
+that I exported to the `doc/` directory handy for exploratory testing.
 
 ### Assumptions
 I made a lot of assumptions here.  My implementation assumes that
