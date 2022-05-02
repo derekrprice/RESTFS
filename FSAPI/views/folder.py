@@ -75,7 +75,7 @@ class FolderView(APIView):
 
         if serializer.is_valid():
             serializer.save()
-            return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
+            return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK if existing else status.HTTP_201_CREATED)
         else:
             return Response({"status": "error", "data": serializer.errors}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 

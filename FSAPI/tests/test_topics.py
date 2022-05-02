@@ -30,7 +30,7 @@ class FolderViewTestCase(TestCase):
         """Can create a topic."""
         c = Client()
         response = c.post("/topics/", {"name": "Meh.", "description": "Really?  Can you believe these people?"})
-        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.status_code, 201)
 
         response = c.get("/topics/")
         content = response.json()

@@ -4,19 +4,20 @@ View the [Demo](https://restfs.herokuapp.com/) on Heroku
 
 ### Assumptions
 I made a lot of assumptions here.  My implementation assumes that
-reads will be the most common operation and to support that efficiently,
-I made some choices that will still support content changes for Documents
-and Topic changes for both Documents and Folders efficiently but which
-will make some write operations, like Folder rename, extremely
-expensive in a large system.
+reads will be the most common operation.  To support that efficiently,
+I sacrificed the efficiency of some write operations.  For example, Folder
+rename will be extremely expensive in a large system.
 
-Retrieving the content of a single file is not supported, to discourage users from making
-too many API calls.
+Retrieving the content of a single file is not supported.
 
 ### Design Diagrams
 * [Models](https://cloud.smartdraw.com/share.aspx/?pubDocShare=FC8D6C4431063FB314E1BB92781FD728BF0)
 * [Use Cases](https://cloud.smartdraw.com/share.aspx/?pubDocShare=F09E5C63519471BE4493FDE741802BE36C2)
-* [List Folder Contents Flow](https://cloud.smartdraw.com/share.aspx/?pubDocShare=07115C526A47DF72FBF2C970D88D146CD14)
+* [List Folder Contents](https://cloud.smartdraw.com/share.aspx/?pubDocShare=07115C526A47DF72FBF2C970D88D146CD14)
+* [Create or Update Folder or Document (PUT)](https://cloud.smartdraw.com/share.aspx/?pubDocShare=ACA57D5BBAC310025A3CBD3F825563F8E6D)
+* [Delete Folder or Document](https://cloud.smartdraw.com/share.aspx/?pubDocShare=749469ABB55182A34B891535222D8F23820)
+* [Create Topic](https://cloud.smartdraw.com/share.aspx/?pubDocShare=395BA4F28B17D2FA4E1A27C9D735B35D1E8)
+* [Delete Topic](https://cloud.smartdraw.com/share.aspx/?pubDocShare=C1CB11AF4A61B0399B428E5AF67AE329057)
 
 ### API
 

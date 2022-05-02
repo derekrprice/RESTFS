@@ -1,0 +1,215 @@
+{
+	"info": {
+		"_postman_id": "48c79494-471f-4e52-940e-24984b8896c5",
+		"name": "RESTFS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Topics",
+			"item": [
+				{
+					"name": "List Topics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/topics/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"topics",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Topic",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Meh.\",\r\n    \"description\": \"Really?  We know better!  Where did these guys come from???\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/topics/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"topics",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Topic",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/topics/4/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"topics",
+								"4",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "INodes",
+			"item": [
+				{
+					"name": "Get Folder",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/folders/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"folders",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add or Replace Folder",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"topics\": [\"SpekiLove!\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/folders/Engineering/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"folders",
+								"Engineering",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add or Replace Document",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"topics\": [\"SpekiLove!\"],\r\n    \"content\": \"We can't get enough of this guy!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/folders/Engineering/Derek/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"folders",
+								"Engineering",
+								"Derek",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete INode",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/folders/Engineering//Derek/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"folders",
+								"Engineering",
+								"",
+								"Derek",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -16,7 +16,7 @@ class FolderViewTestCase(TestCase):
         """Can create a folder."""
         c = Client()
         response = c.put("/folders/Engineering/", {"topics": []}, content_type='application/json')
-        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.status_code, 201)
 
         response = c.get("/folders/")
         content = response.json()
@@ -38,7 +38,7 @@ class FolderViewTestCase(TestCase):
         """Can create a subfolder."""
         c = Client()
         response = c.put("/folders/Marketing/Guerilla/", {"topics": []}, content_type='application/json')
-        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.status_code, 201)
 
         response = c.get("/folders/Marketing/")
         content = response.json()
@@ -51,7 +51,7 @@ class FolderViewTestCase(TestCase):
             "topics": ["SpekiLove!"],
             "content": "Cut sales training and ramp time in half!"
         }, content_type='application/json')
-        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.status_code, 201)
 
         response = c.get("/folders/Marketing/")
         content = response.json()
